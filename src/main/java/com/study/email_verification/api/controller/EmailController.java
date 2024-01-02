@@ -2,6 +2,7 @@ package com.study.email_verification.api.controller;
 
 import com.study.email_verification.api.dto.EmailDto;
 import com.study.email_verification.api.service.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +16,17 @@ public class EmailController {
 
     // 인증코드 메일 발송
     @PostMapping("/send")
-    public String mailSend(EmailDto emailDto) {
-        log.debug("EmailController.mailSend()");
-        int number = emailService.sendMail(emailDto.getMail());
-        return String.valueOf(number);
+    public String mailSend(EmailDto emailDto) throws MessagingException {
+        log.info("EmailController.mailSend()");
+        emailService.sendEmail(emailDto.getMail());
+        return "인증코드가 발송되었습니다.";
     }
 
     // 인증코드 인증
     @PostMapping("/verify")
-    public String verify() {
-        return "인증이 완료되었습니다.";
+    public String verify(EmailDto emailDto) {
+        log.info("EmailController.verify()");
+        boolean isVerify = emailService.verifyEmailCode(emailDto.getMail(), emailDto.getVerifyCode());
+        return isVerify ? "인증이 완료되었습니다." : "인증 실패하셨습니다.";
     }
 }

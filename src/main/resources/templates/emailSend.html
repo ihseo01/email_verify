@@ -21,14 +21,18 @@
     }
 
     function confirmNumber() {
-        var number1 = $("#number").val();
-        var number2 = $("#Confirm").val();
+        let mail = $("#mail").val();
+        let number = $("#number").val();
 
-        if (number1 == number2) {
-            alert("인증되었습니다.");
-        } else {
-            alert("번호가 다릅니다.");
-        }
+        $.ajax({
+           url: "/api/v1/email/verify",
+           type: "post",
+            dataType: "json",
+            data: {"mail": mail, "verifyCode": number},
+            success: function (data, status, xhr) {
+               console.log(status);
+            }
+        });
     }
 </script>
 <body>
